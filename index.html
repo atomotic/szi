@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>SZI viewer</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/openseadragon/5.0.1/openseadragon.js"></script>
+  <script src="szi-tile-source-v0.6.1.umd.cjs"></script>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 30px;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+    #osd {
+      width: 100vw;
+      height: 100vh;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="osd"></div>
+      <script>
+        // Get szi-content URL from query parameters
+        const params = new URLSearchParams(window.location.search);
+        const sziUrl = params.get('szi-content');
+
+        if (!sziUrl) {
+          document.getElementById('osd').innerHTML = '<p style="color: red; padding: 20px;">Error: szi-content URL parameter is required. Usage: ?szi-content=https://...</p>';
+        } else {
+          OpenSeadragon.SziTileSource.createSziTileSource(sziUrl).then(async tileSource => {
+            const viewer = new OpenSeadragon.Viewer({
+              id: "osd",
+              prefixUrl: "https://cdnjs.cloudflare.com/ajax/libs/openseadragon/5.0.1/images/",
+              tileSources: [tileSource],
+            });
+          }).catch(error => {
+            document.getElementById('osd').innerHTML = '<p style="color: red; padding: 20px;">Error loading SZI file: ' + error.message + '</p>';
+          });
+        }
+      </script>
+    </section>
+  </div>
+</body>
+
+</html>
